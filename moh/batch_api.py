@@ -4,7 +4,7 @@ import pandas as pd
 import grequests
 import requests
 
-rel_path = 'originalkoordinater.csv'
+rel_path = 'originalkoordinater_endelig.csv'
 
 def sett_sammen_koordinat_par(ost, nord):
     coordinates_list = []
@@ -20,11 +20,11 @@ def api_batch_prosess(liste_koordinater, batch, subbatch):
     batchsize = batch
     subbatchsize = subbatch
     df = pd.DataFrame(columns=['datakilde', 'terreng', 'x', 'y', 'z'])
-    df.to_csv('moh_final.csv', index=False)
+    df.to_csv('moh_fullstendig.csv', index=False)
 
     for batch_no,i in enumerate(range(0, len(worklist_url), batchsize)):
         df = pd.DataFrame(columns=['datakilde', 'terreng', 'x', 'y', 'z'])
-        print(f"Processing batch {batch_no} out of {len(worklist_url)/batchsize}...")
+        print(f"Processing batch {batch_no} out of {round(len(worklist_url)/batchsize)}...")
         batch = worklist_url[i:(i+batchsize)]
         urls = []
         for url in range(0, len(batch), subbatchsize):
@@ -37,7 +37,7 @@ def api_batch_prosess(liste_koordinater, batch, subbatch):
             resp = r.json()
             for data in resp['punkter']:
                 df = df.append(data, ignore_index=True)
-        df.to_csv('moh_final.csv', index=False, mode='a+', header=False)
+        df.to_csv('moh_fullstendig.csv', index=False, mode='a+', header=False)
 
 
 #skriv

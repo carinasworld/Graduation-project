@@ -6,8 +6,8 @@ from read_coord_csv import last_inn_data_koord
 from datakilde_info import print_datakilde_info
 
 #Last inn CSV med koordinater
-rel_path = 'originalkoordinater.csv'
-ost_koord, nord_koord = last_inn_data_koord('originalkoordinater.csv')
+rel_path = 'originalkoordinater_endelig.csv'
+ost_koord, nord_koord = last_inn_data_koord(rel_path)
 
 #Info om datakilder
 print_datakilde_info()
@@ -19,10 +19,5 @@ subbatchsize = 50
 api_batch_prosess(worklist_url, batchsize, subbatchsize)
 
 
-#Noter de med missing moh?
-# idx_missing = []
-# for idx, json in enumerate(liste_koord_med_moh):
-#     for punkt in json['punkter']:
-#         if punkt['z'] == 2.39:
-#             idx_missing.append(idx)
+
     

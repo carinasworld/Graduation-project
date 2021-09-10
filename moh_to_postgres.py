@@ -1,14 +1,6 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Sep  9 12:42:08 2021
-
-@author: Nelly
-"""
-
 import pandas as pd
-import openpyxl
-from sqlalchemy import create_engine
-#%%
+from psycopg2.extras import execute_batch
+
 def push(query, user= 'student_carina@academy-summer21', password = 'carina',
             host="academy-summer21.postgres.database.azure.com", port = "5432", database = 'runecaensis'):
     try:
@@ -42,29 +34,16 @@ push(query)
 def inserting():
     import csv
     import psycopg2
-    try: 
-        conn = psycopg2.connect(user= 'student_carina@academy-summer21', password = 'carina', 
-                host='academy-summer21.postgres.database.azure.com', port = "5432", database = 'runecaensis')
-        cur = conn.cursor()
-        with open('moh_final.csv', 'r') as f:
-            reader = csv.reader(f)
-            next(reader) # Skip the header row.
-            for row in reader:
-                cur.execute(
-                "INSERT INTO MOH_table VALUES (%s, %s, %s, %s, %s)",
-                row
-            )
-            #conn.commit()
-    except: 
-        "000"
     
-
-    finally:
-        conn.close()
-        cur.close()
+    conn = psycopg2.connect(user= 'student_carina@academy-summer21', password = 'carina', 
+            host='academy-summer21.postgres.database.azure.com', port = "5432", database = 'runecaensis')
+    cur = conn.cursor()
+    with open(r'moh\moh_fullstendig_uten_nan.csv', 'r') as f:
+        reader = csv.reader(f)
+        next(reader) # Skip the header row.
+        execute_batch(cur, "INSERT INTO MOH_table VALUES (%s, %s, %s, %s, %s)", [r for r in reader], page_size=1000)
+        conn.commit()
 
 inserting()
-
-
 
 
