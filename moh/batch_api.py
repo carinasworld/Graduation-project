@@ -12,22 +12,23 @@ def sett_sammen_koordinat_par(ost, nord):
         coordinates_list.append(list(coord))
     return coordinates_list
 
+def exception_handler(request, exception):
+    print(f"Request failed:", exception)
+
 def api_batch_prosess(liste_koordinater, batch, subbatch):
     worklist_url = liste_koordinater
     batchsize = batch
     subbatchsize = subbatch
     df = pd.DataFrame(columns=['datakilde', 'terreng', 'x', 'y', 'z'])
-    df.to_csv('moh.csv', index=False)
-
-    def exception_handler(request, exception):
-        print(f"Request failed:", exception)
+    df.to_csv('moh_final.csv', index=False)
 
     for batch_no,i in enumerate(range(0, len(worklist_url), batchsize)):
-        print(f"Processing batch {batch_no} out of {len(range(0, len(worklist_url), batchsize))}...")
-        batch = worklist_url[i:i+batchsize]
+        df = pd.DataFrame(columns=['datakilde', 'terreng', 'x', 'y', 'z'])
+        print(f"Processing batch {batch_no} out of {len(worklist_url)/batchsize}...")
+        batch = worklist_url[i:(i+batchsize)]
         urls = []
         for url in range(0, len(batch), subbatchsize):
-            liste_pkt = batch[url:url+subbatchsize]
+            liste_pkt = batch[url:(url+subbatchsize)]
             r = f'https://ws.geonorge.no/hoydedata/v1/punkt?geojson=false&punkter={liste_pkt}&koordsys=4326'
             urls.append(r)
         rs = [grequests.get(u) for u in urls]
@@ -36,7 +37,7 @@ def api_batch_prosess(liste_koordinater, batch, subbatch):
             resp = r.json()
             for data in resp['punkter']:
                 df = df.append(data, ignore_index=True)
-        df.to_csv('moh.csv', index=False, mode='a+', header=False)
+        df.to_csv('moh_final.csv', index=False, mode='a+', header=False)
 
 
 #skriv
@@ -44,5 +45,3 @@ def api_batch_prosess(liste_koordinater, batch, subbatch):
 # test = responses[1].json()
 # for i in test['punkter']:
 #     test_df = test_df.append(i, ignore_index=True)
-
-
