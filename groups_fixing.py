@@ -9,8 +9,8 @@ import pandas as pd
 
 #%%
 
-groups = pd.read_csv('C:/Users/Carin/OneDrive/Documents/AW academy/graduation/carina.csv')
-small_groups = pd.read_csv('C:/Users/Carin/OneDrive/Documents/AW academy/graduation/carina_small.csv')
+#groups = pd.read_csv('C:/Users/Carin/OneDrive/Documents/AW academy/graduation/carina.csv')
+groups = pd.read_csv('C:/Users/Carin/OneDrive/Documents/AW academy/graduation/carina_small.csv')
 
 #%%
 groups.columns
@@ -56,19 +56,61 @@ groups['sum_per_row'].min()
 groups['sum_per_row'].max()
 groups['sum_per_row']
 
-groups_smol = groups[groups.sum_per_row > 10]
+groups_smol = groups[groups.sum_per_row > 20]
+groups_smol.head()
+
+
+groups_smol.drop(columns=['sum_per_row'], inplace=True)
+#%%
+
+cols=groups_smol.columns
+cols=list(cols)
+
+#%%
+
+groups_smol.drop(columns= ['artsnavn_Aconitum lycoctonum',
+    'artsnavn_Atriplex prostrata prostrata',
+    'artsnavn_Cerastium regelii',
+    'artsnavn_Cicerbita macrophylla uralensis',
+    'artsnavn_Geum ×intermedium',
+    'artsnavn_Lysimachia europaea arctica',
+    'artsnavn_Lysimachia europaea europaea',
+    'artsnavn_Oxybasis glauca',
+    'artsnavn_Parnassia palustris palustris',
+    'artsnavn_Picea abies abies',
+    'artsnavn_Taraxacum croceum'], inplace=True)
+
+
+cols.remove('artsnavn_Aconitum lycoctonum')
+cols.remove('artsnavn_Atriplex prostrata prostrata')
+cols.remove('artsnavn_Cerastium regelii')
+cols.remove('artsnavn_Cicerbita macrophylla uralensis')
+cols.remove('artsnavn_Geum ×intermedium')
+cols.remove('artsnavn_Lysimachia europaea arctica')
+cols.remove('artsnavn_Lysimachia europaea europaea')
+cols.remove('artsnavn_Oxybasis glauca')
+cols.remove('artsnavn_Parnassia palustris palustris')
+cols.remove('artsnavn_Picea abies abies')
+cols.remove('artsnavn_Taraxacum croceum')
+
+#%%
+
+cols=pd.Series(cols)
+
+cols=cols.str.replace('[','')
+cols=cols.str.replace(']','')
+cols=cols.str.replace('artsnavn_','')
+cols=cols.str.replace('_',': ')
+cols=cols.str.replace('terreng','Terreng')
+cols=cols.str.capitalize()
+
+groups_smol.columns=cols
+
 groups_smol.head()
 
 #%%
-nump = groups.to_numpy()
 
-from sklearn.preprocessing import StandardScaler
-ss=StandardScaler()
-cols=groups_smol.columns
-cols=list(cols)
-tfs= ss.fit_transform(groups_smol[cols])
+groups_smol.to_csv('C:/Users/Carin/OneDrive/Documents/AW academy/graduation/beautiful_csv.csv', index=False)
 
-
-#%%
 
 
